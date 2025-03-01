@@ -14,13 +14,19 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -29,12 +35,17 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 
 
 @Composable
-fun ScanBluetoothButton() {
+fun ScanBluetoothButton(modifier: Modifier) {
     val context = LocalContext.current
 
     val bleItemsList = remember { mutableStateListOf<String>() }
@@ -96,7 +107,9 @@ fun ScanBluetoothButton() {
             }
 
             if ( !bleItemsList.contains(deviceName) ) {
-               bleItemsList.add(deviceName);
+                if ( deviceName.startsWith("TERRA-IOT") ) {
+                    bleItemsList.add(deviceName);
+                }
             }
             //val toast = Toast.makeText(context, "onScanResult: $result", Toast.LENGTH_LONG)
             //toast.show()
@@ -162,8 +175,33 @@ fun ScanBluetoothButton() {
             }
         } else {
             LazyColumn() {
-                items(bleItemsList) {
-                    item -> Text(text = item)
+                items(bleItemsList) { item ->
+
+                    Surface(
+                        modifier = Modifier.clickable { /* Action */ },
+                        color = MaterialTheme.colorScheme.surface
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .height(64.dp)
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = item, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                        }
+                    }
+
+
+//                    ElevatedCard(
+//                        elevation = CardDefaults.cardElevation(
+//                            defaultElevation = 6.dp
+//                        ),
+//                        modifier = Modifier.fillMaxWidth().height(64.dp)
+//                            //.size(width = 240.dp, height = 100.dp)
+//                    )  {
+//                            Text(text = item)
+//                        }
+//                    }
                 }
             }
         }

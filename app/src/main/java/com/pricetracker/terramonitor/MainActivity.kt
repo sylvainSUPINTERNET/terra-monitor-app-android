@@ -13,15 +13,30 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pricetracker.terramonitor.ui.components.BLE.ScanBluetoothButton
 import com.pricetracker.terramonitor.ui.components.BluetoothButton
 import com.pricetracker.terramonitor.ui.components.BluetoothPermissionButton
@@ -41,17 +56,37 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            TerraMonitorTheme {
+            TerraMonitorTheme(
+                darkTheme=false,
+                dynamicColor=false
+            ) {
                 Scaffold(
                     modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars)
                 ) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                    ScanBluetoothButton()
-                    //BluetoothPermissionButton()
-                    //BluetoothButton()
+                    Column {
+                        Box(
+                            modifier = Modifier.padding(20.dp)
+                        ) {
+                            Row {
+                                Icon(
+                                    painter = painterResource(R.drawable.link),
+                                    contentDescription = stringResource(id = R.string.pairing_icon),
+                                    modifier = Modifier.size(64.dp).padding(10.dp)
+                                )
+                                Text(
+                                    text = "Pairing",
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.align(CenterVertically)
+                                )
+                            }
+                        }
+                        Box(
+                            //modifier = Modifier.padding(62.dp)
+                        ) {
+                            ScanBluetoothButton(modifier = Modifier.padding(innerPadding))
+                        }
+                    }
                 }
             }
         }
