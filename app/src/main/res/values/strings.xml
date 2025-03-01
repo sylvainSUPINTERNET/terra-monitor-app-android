@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">TerraMonitor</string>
     <string name="pairing_icon">Pairing Icon</string>
+    <string name="ble_icon">BLE Icon</string>
 </resources>
