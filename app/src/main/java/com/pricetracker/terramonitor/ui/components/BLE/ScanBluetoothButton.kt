@@ -32,12 +32,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,6 +64,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -230,18 +240,18 @@ fun ScanBluetoothButton(modifier: Modifier) {
                     contentAlignment = Alignment.Center
                 ) {
                     Box(
-
                         modifier=Modifier.shadow(
                             elevation = 16.dp,
                             shape = CircleShape,
                             clip = true,
                             ambientColor = Color(0xFF6200EE),
                             spotColor = Color(0xFFB5179E),
-                        ).graphicsLayer(
-                            scaleX = animatedScale,
-                            scaleY = animatedScale,
-                            shadowElevation = animatedScale * 8.dp.value
                         )
+//                            .graphicsLayer(
+//                            scaleX = animatedScale,
+//                            scaleY = animatedScale,
+//                            shadowElevation = animatedScale * 8.dp.value
+//                        )
                     ) {
                         Button(
                             onClick = {
@@ -268,11 +278,17 @@ fun ScanBluetoothButton(modifier: Modifier) {
                 }
             }
         } else {
+            var showDialog by remember { mutableStateOf(false) }
+            val SSID = remember { mutableStateOf(TextFieldValue("")) }
+            val wifiPassword = remember { mutableStateOf(TextFieldValue("")) }
+
+
             LazyColumn() {
                 items(bleItemsList) { item ->
-
                     Surface(
-                        modifier = Modifier.clickable { /* Action */ },
+                        modifier = Modifier.clickable {
+                            showDialog = true;
+                        },
                         color = MaterialTheme.colorScheme.surface
                     ) {
                         Box(
@@ -286,16 +302,73 @@ fun ScanBluetoothButton(modifier: Modifier) {
                     }
 
 
-//                    ElevatedCard(
-//                        elevation = CardDefaults.cardElevation(
-//                            defaultElevation = 6.dp
-//                        ),
-//                        modifier = Modifier.fillMaxWidth().height(64.dp)
-//                            //.size(width = 240.dp, height = 100.dp)
-//                    )  {
-//                            Text(text = item)
-//                        }
-//                    }
+                    if (showDialog) {
+
+                        var passwordVisible by remember { mutableStateOf(false) }
+
+                        AlertDialog(
+                            onDismissRequest = {
+                                showDialog = false
+                            },
+                            title = {
+                                Column (
+                                    modifier = Modifier.padding(2.dp).fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text( fontWeight = FontWeight.Medium, text="WiFi Login")
+                                }
+                            },
+                            text = {
+                                Column(
+                                    modifier = Modifier.padding(2.dp).fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    OutlinedTextField(
+                                        value = SSID.value,
+                                        onValueChange = { SSID.value = it },
+                                        label = { Text("SSID")}
+                                    )
+                                    OutlinedTextField(
+                                        value = wifiPassword.value,
+                                        onValueChange = { wifiPassword.value = it },
+                                        label = { Text("Password") },
+                                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                                        trailingIcon = {
+                                            IconButton(onClick = {passwordVisible = !passwordVisible}){
+                                                if (passwordVisible) Icon(
+                                                    painter = painterResource(R.drawable.visibility_off),
+                                                    contentDescription = stringResource(id = R.string.visibility_off)
+                                                ) else Icon(
+                                                    painter = painterResource(R.drawable.visibility),
+                                                    contentDescription = stringResource(id = R.string.visibility)
+                                                )
+                                            }
+                                        }
+                                    )
+                                }
+                            },
+                            confirmButton = {
+                                Column(
+                                    modifier= Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ){
+                                    Button(
+                                        onClick = {
+                                            showDialog = false
+                                        },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFF6200EE),
+                                            contentColor = Color.White
+                                        ),
+                                    ) {
+                                        Text("Confirm")
+                                    }
+                                }
+
+                            }
+                        )
+                    }
                 }
             }
         }

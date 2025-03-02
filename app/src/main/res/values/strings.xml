@@ -2,4 +2,6 @@
     <string name="app_name">TerraMonitor</string>
     <string name="pairing_icon">Pairing Icon</string>
     <string name="ble_icon">BLE Icon</string>
+    <string name="visibility">visibility icon</string>
+    <string name="visibility_off">visibility off icon</string>
 </resources>
